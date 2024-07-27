@@ -32,24 +32,25 @@ class Bot(commands.Bot):
         current_time = time.time()
         self.message_times.append(current_time)
 
-        if self.lastloop is None or time.time() - self.lastloop > self.window_size:
-                print('---------------Inside----------------')
-                self.lastloop = time.time()
-                # number of messages in the last window_size seconds
-                window_messages_count = len([msg_time for msg_time in self.message_times if time.time() - msg_time < self.window_size])
-                # calculate the mean and standard deviation of the message counts
-                if len(self.message_counts) < 15:
-                    mean = np.mean(self.message_counts)
-                    std_dev = np.std(self.message_counts)
-                    if mean + 2.5 * std_dev < window_messages_count:
-                        for i in range(4):
-                            print('[------------Creating Clip------------]')
-                        clip_id, edit_url = utils.create_clip(utils.streamer_to_id(self.chanel))
-                        # Save clip_id and clip_url to a file
-                        with open('clips.txt', 'a') as f:
-                            f.write(f'[{dt.now()}] {clip_id}, {edit_url}\n')
-            
-                self.message_counts.append(window_messages_count)
+        if self.lastloop is None or time.time() - self.lastloop <= self.window_size: return
+
+        print('---------------Inside----------------')
+        self.lastloop = time.time()
+        # number of messages in the last window_size seconds
+        window_messages_count = len([msg_time for msg_time in self.message_times if time.time() - msg_time < self.window_size])
+        # calculate the mean and standard deviation of the message counts
+        if len(self.message_counts) < 15:
+            mean = np.mean(self.message_counts)
+            std_dev = np.std(self.message_counts)
+            if mean + 2.5 * std_dev < window_messages_count:
+                for i in range(4):
+                    print('[------------Creating Clip------------]')
+                clip_id, edit_url = utils.create_clip(utils.streamer_to_id(self.chanel))
+                # Save clip_id and clip_url to a file
+                with open('clips.txt', 'a') as f:
+                    f.write(f'[{dt.now()}] {clip_id}, {edit_url}\n')
+    
+        self.message_counts.append(window_messages_count)
 
 
             
