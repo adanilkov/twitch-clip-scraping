@@ -51,11 +51,3 @@ class Bot(commands.Bot):
                     f.write(f'[{dt.now()}] {clip_id}, {edit_url}\n')
     
         self.message_counts.append(window_messages_count)
-
-
-            
-            
-
-
-bot = Bot('ohnepixel')
-bot.run()

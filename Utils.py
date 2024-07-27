@@ -2,6 +2,9 @@ from dotenv import load_dotenv
 import requests
 import os
 
+
+CALLBACK_URL = ""
+
 def get_token():
     load_dotenv()
     return os.getenv('TOKEN')
@@ -18,6 +21,13 @@ def get_app_client_id():
     load_dotenv()
     return os.getenv('APP_CLIENT_ID')
 
+def get_callback_url():
+    return CALLBACK_URL
+
+def set_callback_url(url):
+    global CALLBACK_URL
+    CALLBACK_URL = url
+    
 def streamer_to_id(username: str) -> int:
     token = get_token()
     client_id = get_client_id()
@@ -53,3 +63,27 @@ def create_clip(broadcaster_id):
         return None, None
     
 
+def get_access_token():
+    url = 'https://id.twitch.tv/oauth2/token'
+    params = {
+        'client_id': get_app_client_id(),
+        'client_secret': get_app_client_secret(),
+        'grant_type': 'client_credentials'
+    }
+    response = requests.post(url, params=params)
+    return response.json()['access_token']
+
+def read_current_user_id():
+
+    IDS = []
+    
+    with open('current_user_ids') as file:
+        for line in file:
+            IDS.append(line.strip())
+    return IDS
+
+def save_user_ids(user_ids):
+    with open('current_user_ids', 'a') as file:
+        for user_id in user_ids:
+            file.write(user_id + '\n')
+    return
