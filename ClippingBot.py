@@ -19,14 +19,14 @@ class Bot(commands.Bot):
 
 
     async def event_ready(self):
-        print(f'Logged in as | {self.nick}')
-        print(f'User id is | {self.user_id}')
+        if utils.OUTPUT == self.chanel: print(f'Logged in as | {self.nick}')
+        if utils.OUTPUT == self.chanel: print(f'User id is | {self.user_id}')
 
     async def event_message(self, message):
         if message.echo:
             return
 
-        print(message.content)
+        if utils.OUTPUT == self.chanel: print(message.content)
 
         # Record the time of the message
         current_time = time.time()
@@ -34,7 +34,7 @@ class Bot(commands.Bot):
 
         if self.lastloop is None or time.time() - self.lastloop <= self.window_size: return
 
-        print('---------------Inside----------------')
+        if utils.OUTPUT == self.chanel: print('---------------Inside----------------')
         self.lastloop = time.time()
         # number of messages in the last window_size seconds
         window_messages_count = len([msg_time for msg_time in self.message_times if time.time() - msg_time < self.window_size])
@@ -44,7 +44,7 @@ class Bot(commands.Bot):
             std_dev = np.std(self.message_counts)
             if mean + 2.5 * std_dev < window_messages_count:
                 for i in range(4):
-                    print('[------------Creating Clip------------]')
+                    if utils.OUTPUT == self.chanel: print('[------------Creating Clip------------]')
                 clip_id, edit_url = utils.create_clip(utils.streamer_to_id(self.chanel))
                 # Save clip_id and clip_url to a file
                 with open('clips.txt', 'a') as f:

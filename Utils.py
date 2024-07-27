@@ -4,6 +4,7 @@ import os
 
 
 CALLBACK_URL = ""
+OUTPUT = None #Username of of streamer which you want to see the chat of.
 
 def get_token():
     load_dotenv()
@@ -87,3 +88,28 @@ def save_user_ids(user_ids):
         for user_id in user_ids:
             file.write(user_id + '\n')
     return
+
+
+def check_stream_status(username: str) -> bool:
+    token = get_token()
+    client_id = get_client_id()
+    headers = {
+        'Client-ID': f'{client_id}',
+        'Authorization': f'Bearer {token}'
+    }
+    params = {
+        'user_login': username
+    }
+
+    response = requests.get(
+        'https://api.twitch.tv/helix/streams',
+        headers=headers,
+        params=params
+    )
+    data = response.json()
+    if not data:
+        raise Exception('No data returned from Twitch API')
+    if data['data']:
+        return True
+    else:
+        return False
