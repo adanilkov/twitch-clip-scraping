@@ -10,6 +10,14 @@ def get_client_id():
     load_dotenv()
     return os.getenv('CLIENT_ID')
 
+def get_app_client_secret():
+    load_dotenv()
+    return os.getenv('APP_CLIENT_SECRET')
+
+def get_app_client_id():
+    load_dotenv()
+    return os.getenv('APP_CLIENT_ID')
+
 def streamer_to_id(username: str) -> int:
     token = get_token()
     client_id = get_client_id()
@@ -43,4 +51,5 @@ def create_clip(broadcaster_id):
     else:
         print("ERROR: Clip creation failed.")
         return None, None
+    
 
